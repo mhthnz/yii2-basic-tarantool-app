@@ -1,9 +1,29 @@
 version: '2'
 services:
+  tarantool:
+    image: tarantool/tarantool:2.7
+    hostname: tarantool
+    networks:
+      - mynet
+
   php:
-    image: yiisoftware/yii2-php:7.4-apache
+    image: yiisoftware/yii2-php:7.4-fpm-nginx
     volumes:
       - ~/.composer-docker/cache:/root/.composer/cache:delegated
       - ./:/app:delegated
     ports:
-      - '8000:80'
+      - '8089:80'
+    environment:
+      TARANTOOL_HOST: "tarantool:3301"
+    networks:
+      - mynet
+    depends_on:
+      - tarantool
+    command:
+      - sh
+      - -c
+      - php /app/yii tarantool-migrate --migrationNamespaces=\\mhthnz\\tarantool\\rbac\\migrations,\\mhthnz\\tarantool\\session\\migrations --interactive=0 && php /app/yii cache/flush-all && supervisord -c /etc/supervisor/supervisord.conf
+
+networks:
+  mynet:
+    driver: bridge

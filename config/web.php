@@ -12,10 +12,6 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
-        'tarantool' => [
-            'class' => \mhthnz\tarantool\Connection::class,
-            'dsn' => 'tcp://guest@localhost:3301/?connect_timeout=5&max_retries=3',
-        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'b8uDpUZ2xP1d2SiTPJiQNXLxOsoD9VBn',
@@ -45,18 +41,20 @@ $config = [
                 ],
             ],
         ],
-        'db' => $db,
+        'tarantool' => $db,
         'session' => [
             'class' => '\mhthnz\tarantool\session\Session',
         ],
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+        'authManager' => [
+            'class' => \mhthnz\tarantool\rbac\DbManager::class,
+            'db' => 'tarantool', // Tarantool service id 'tarantool' default
+        ],
     ],
     'params' => $params,
 ];
@@ -81,7 +79,7 @@ if (YII_ENV_DEV) {
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['*'],
     ];
 }
 

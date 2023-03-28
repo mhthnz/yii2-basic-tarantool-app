@@ -20,12 +20,13 @@ $config = [
         ],
     ],
     'components' => [
-        'tarantool' => [
-            'class' => \mhthnz\tarantool\Connection::class,
-            'dsn' => 'tcp://guest@localhost:3301/?connect_timeout=5&max_retries=3',
-        ],
+        'tarantool' => $db,
         'cache' => [
             'class' => 'yii\caching\FileCache',
+        ],
+        'authManager' => [
+            'class' => \mhthnz\tarantool\rbac\DbManager::class,
+            'db' => 'tarantool', // Tarantool service id 'tarantool' default
         ],
         'log' => [
             'targets' => [
@@ -35,7 +36,6 @@ $config = [
                 ],
             ],
         ],
-        'db' => $db,
     ],
     'params' => $params,
     /*

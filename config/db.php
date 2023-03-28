@@ -1,11 +1,11 @@
 <?php
-
+$host = getenv("TARANTOOL_HOST");
+if (!$host) {
+    $host = 'localhost:3301';
+}
 return [
-    'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
-    'username' => 'root',
-    'password' => '',
-    'charset' => 'utf8',
+    'class' => \mhthnz\tarantool\Connection::class,
+    'dsn' => 'tcp://guest@'.$host.'/?connect_timeout=5&max_retries=3',
 
     // Schema cache options (for production environment)
     //'enableSchemaCache' => true,
